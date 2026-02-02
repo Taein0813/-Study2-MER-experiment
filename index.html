@@ -98,6 +98,86 @@
       .trial-layout { flex-direction: column; }
       .left-pane, .right-pane { width: 100%; }
     }
+
+    /* =========================
+   ✅ Mobile-first 개선
+   ========================= */
+
+/* 기본 폰트 조금 키우기(PC 포함) */
+body {
+  font-size: 16px;
+}
+
+/* 제목/설명도 조금 키우기 */
+h1.main-title { font-size: 28px; }
+.info-text { font-size: 15px; }
+
+/* 슬라이더/라벨 가독성 */
+.slider-row { font-size: 15px; }
+.slider-label-line { font-size: 13px; }
+
+/* 버튼 터치하기 편하게 */
+.jspsych-btn, #jspsych-survey-html-form-next, [id^="jspsych-html-button-response-button"] {
+  font-size: 16px;
+  padding: 12px 18px;
+}
+
+/* range(슬라이더) 손가락 터치 편하게 */
+.slider-wrap input[type="range"] {
+  height: 28px;
+}
+
+/* -------------------------
+   모바일(좁은 화면)에서 강제 1단
+   ------------------------- */
+@media (max-width: 900px) {
+  body {
+    padding: 0 14px;          /* 좌우 여백 */
+    font-size: 18px;          /* 모바일 기본 글씨 크게 */
+  }
+
+  h1.main-title { font-size: 26px; }
+
+  .trial-layout {
+    flex-direction: column;   /* ✅ 한 단 */
+    gap: 14px;
+  }
+
+  .left-pane, .right-pane {
+    width: 100%;
+  }
+
+  fieldset {
+    padding: 14px 14px;
+  }
+
+  legend {
+    font-size: 16px;
+  }
+
+  .top-instruction p {
+    font-size: 15px;
+  }
+
+  .progress-text {
+    font-size: 14px;
+  }
+
+  /* 모바일에서 라벨이 너무 길면 줄바꿈 */
+  .slider-label-line {
+    gap: 10px;
+  }
+  .slider-label-line span {
+    white-space: normal;
+  }
+
+  /* textarea도 크게 */
+  .textarea {
+    font-size: 16px;
+    min-height: 260px;
+  }
+}
+
   </style>
 </head>
 
