@@ -2,15 +2,11 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>음악 감정 평가 실험</title>
+  <title>음악 감정 평가 실험 (파일럿)</title>
 
   <!-- jsPsych core -->
   <script src="https://unpkg.com/jspsych@7.3.4"></script>
-  <link
-    href="https://unpkg.com/jspsych@7.3.4/css/jspsych.css"
-    rel="stylesheet"
-    type="text/css"
-  />
+  <link href="https://unpkg.com/jspsych@7.3.4/css/jspsych.css" rel="stylesheet" type="text/css" />
 
   <!-- plugins -->
   <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.3"></script>
@@ -20,17 +16,14 @@
     body {
       max-width: 1100px;
       margin: 0 auto;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue",
-        sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
     }
-
     h1.main-title {
       text-align: center;
       margin: 18px 8px 8px;
       font-size: 26px;
       line-height: 1.3;
     }
-
     fieldset {
       margin-bottom: 20px;
       border: 1px dashed #a0a0a0;
@@ -38,28 +31,15 @@
       border-radius: 6px;
       background: #fafafa;
     }
-
-    legend {
-      font-weight: 600;
-      padding: 0 6px;
-    }
-
+    legend { font-weight: 600; padding: 0 6px; }
     .trial-layout {
       display: flex;
       gap: 24px;
       align-items: flex-start;
       margin-top: 12px;
     }
-
-    .left-pane {
-      flex: 1.2;
-      text-align: left;
-    }
-
-    .right-pane {
-      flex: 1;
-    }
-
+    .left-pane { flex: 1.2; text-align: left; }
+    .right-pane { flex: 1; }
     .top-instruction {
       text-align: center;
       margin-bottom: 10px;
@@ -68,47 +48,19 @@
       background: #fafafa;
       border-radius: 6px;
     }
-
-    .jspsych-btn {
-      padding: 6px 16px;
-    }
-
-    .slider-row {
-      margin: 8px 0 18px 0;
-      font-size: 13px;
-    }
-
+    .jspsych-btn { padding: 6px 16px; }
+    .slider-row { margin: 8px 0 18px 0; font-size: 13px; }
     .slider-label-line {
       display: flex;
       justify-content: space-between;
       font-size: 11px;
       margin-top: 4px;
     }
-
-    .slider-label-line span {
-      flex: 1;
-      text-align: center;
-    }
-
-    .slider-label-line span:first-child {
-      text-align: left;
-    }
-
-    .slider-label-line span:last-child {
-      text-align: right;
-    }
-
-    .slider-wrap {
-      position: relative;
-      width: 100%;
-      margin-top: 6px;
-    }
-
-    .slider-wrap input[type="range"] {
-      width: 100%;
-      margin: 0;
-    }
-
+    .slider-label-line span { flex: 1; text-align: center; }
+    .slider-label-line span:first-child { text-align: left; }
+    .slider-label-line span:last-child { text-align: right; }
+    .slider-wrap { position: relative; width: 100%; margin-top: 6px; }
+    .slider-wrap input[type="range"] { width: 100%; margin: 0; }
     .slider-wrap .mid-tick {
       position: absolute;
       top: 50%;
@@ -119,76 +71,31 @@
       background: #777;
       pointer-events: none;
     }
-
     .progress-text {
       text-align: right;
       font-size: 13px;
       margin: 6px 4px 4px;
       color: #555;
     }
-
-    .consent-text {
-      font-size: 13px;
-      margin-bottom: 8px;
-      line-height: 1.6;
-    }
-
-    .consent-input-row {
-      margin: 10px 0;
-      font-size: 13px;
-    }
-
-    .consent-input-row label {
-      display: inline-block;
-      min-width: 140px;
-      font-weight: 600;
-    }
-
-    .consent-input-row input[type="text"] {
-      width: 60%;
-      max-width: 360px;
-      padding: 6px 8px;
-      font-size: 13px;
-    }
-
-    /* ✅ 모든 다음/종료 버튼을 화면 맨 아래와 띄우기 */
-    #jspsych-survey-html-form-next {
-      margin-bottom: 40px;
-    }
-    [id^="jspsych-html-button-response-button"] {
-      margin-bottom: 40px;
-    }
+    .info-text { font-size: 13px; line-height: 1.7; margin-top: 12px; }
+    #jspsych-survey-html-form-next { margin-bottom: 40px; }
+    [id^="jspsych-html-button-response-button"] { margin-bottom: 40px; }
 
     @media (max-width: 900px) {
-      .trial-layout {
-        flex-direction: column;
-      }
-      .left-pane,
-      .right-pane {
-        width: 100%;
-      }
-
-      .consent-input-row label {
-        display: block;
-        margin-bottom: 6px;
-      }
-
-      .consent-input-row input[type="text"] {
-        width: 100%;
-        max-width: 100%;
-      }
+      .trial-layout { flex-direction: column; }
+      .left-pane, .right-pane { width: 100%; }
     }
   </style>
 </head>
+
 <body>
   <div id="jspsych-target"></div>
 
   <script>
     // -----------------------------
-    // 0. Google Apps Script 웹앱 URL
+    // 0. 제출 받을 Google Apps Script Web App URL
     // -----------------------------
-    const SUBMIT_URL =
-      "https://script.google.com/macros/s/AKfycby_zNl794B9edEQjZ89m3hhqgPHtcbmEgSss8JhsfgjsMQMooTZ1i5dJ7TwN_7PzS2K/exec";
+    const SUBMIT_URL = "https://script.google.com/macros/s/PASTE_YOUR_WEBAPP_ID/exec";
 
     // -----------------------------
     // 1. jsPsych 초기화
@@ -202,13 +109,14 @@
         const submitted_at = now.toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });
         const submitted_iso = now.toISOString();
 
+        // no-cors: 저장은 되지만 프론트에서 응답을 읽을 수 없음(안정적)
         fetch(SUBMIT_URL, {
           method: "POST",
           mode: "no-cors",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             subject_id: subject_id,
-            name: participant_name,   // ✅ 이름도 같이 저장
+            name: participant_name,
             csv: csv,
             submitted_at: submitted_at,
             submitted_iso: submitted_iso,
@@ -217,30 +125,28 @@
       },
     });
 
-    // 참가자 ID 생성
+    // 참가자 ID
     const subject_id = jsPsych.randomization.randomID(10);
-
-    // 이름 변수(시작 화면에서 채움)
     let participant_name = "";
 
     // -----------------------------
-    // 1-0. 시작: 이름만 입력
+    // 2. 시작 화면: 이름만 입력
     // -----------------------------
     const name_screen = {
       type: jsPsychSurveyHtmlForm,
       preamble: `
-        <h1 class="main-title">음악 감정 평가 실험</h1>
-        <p class="consent-text" style="text-align:left; margin-top:14px;">
+        <h1 class="main-title">음악 감정 평가 실험 (파일럿)</h1>
+        <div class="info-text" style="text-align:left;">
           아래에 <strong>본인 이름</strong>만 입력한 뒤 시작해 주세요.<br>
           * 중간에 나가시면 저장이 안됩니다. 한번에 끝까지 진행해 주세요!<br>
           * 조용한 곳에서 가장 편한 방법으로 들어주세요.<br>
           * 너무 오래 생각하지 마시고 직관적으로 평가해 주세요.
-        </p>
+        </div>
       `,
       html: `
-        <div class="consent-input-row">
-          <label>이름 :</label>
-          <input type="text" name="name" required placeholder="예: 홍길동">
+        <div class="info-text" style="text-align:left; margin-top:14px;">
+          <label style="font-weight:600;">이름: </label>
+          <input type="text" name="name" required placeholder="예: 홍길동" style="padding:6px 8px; width:280px; max-width:100%;">
         </div>
       `,
       button_label: "실험 시작하기",
@@ -256,41 +162,28 @@
     };
 
     // -----------------------------
-    // 2. 자극 목록 준비 (✅ 총 40개로 변경)
-    //    4 emotions × 2 tags(C,S) × 5 = 40
+    // 3. 자극 목록: 총 8곡 (파일명: calm_D01.mp3 등)
+    //    ⚠️ 여기 파일명이 실제 stims 폴더와 정확히 일치해야 함
     // -----------------------------
-    const emotionGroups = ["calm", "cheerful", "sad", "tense"]; // ✅ 4개만 사용
+    const stimuli = [
+      { file: "stims/calm_D01.wav",  base_emotion: "calm",  tag: "D" },
+      { file: "stims/cheerful_D01.wav",  base_emotion: "calm",  tag: "D" },
+      { file: "stims/calm_T01.wav",  base_emotion: "calm",  tag: "T" },
+      { file: "stims/cheerful_T01.wav",  base_emotion: "calm",  tag: "T" },
 
-    let stimuli = [];
-    let seqCounter = 1;
+      { file: "stims/tense_D01.wav", base_emotion: "tense", tag: "D" },
+      { file: "stims/sad_D01.wav", base_emotion: "tense", tag: "D" },
+      { file: "stims/tense_T01.wav", base_emotion: "tense", tag: "T" },
+      { file: "stims/sad_T01.wav", base_emotion: "tense", tag: "T" },
+    ];
 
-    emotionGroups.forEach((em) => {
-      ["C", "S"].forEach((tag) => {
-        for (let i = 1; i <= 5; i++) {
-          const num = String(i).padStart(2, "0");
-          stimuli.push({
-            file: `stims/${em}_${tag}${num}.mp3`,
-            base_emotion: em,
-            variant: `${tag}${num}`,
-            seq: seqCounter,
-          });
-          seqCounter++;
-        }
-      });
-    });
-
-    // 랜덤 순서
-    stimuli = jsPsych.randomization.shuffle(stimuli);
-
-    // seq 다시 부여
-    stimuli.forEach((s, idx) => {
-      s.seq = idx + 1;
-    });
-
-    const TOTAL_TRIALS = stimuli.length; // ✅ 40
+    // 랜덤화 & seq 부여
+    const shuffled_stimuli = jsPsych.randomization.shuffle(stimuli);
+    shuffled_stimuli.forEach((s, idx) => { s.seq = idx + 1; });
+    const TOTAL_TRIALS = shuffled_stimuli.length; // 8
 
     // -----------------------------
-    // 3. 감정 슬라이더 라벨
+    // 4. 감정 슬라이더 라벨 (원래 7개 유지)
     // -----------------------------
     const sliderEmotions = [
       { code: "cheerful", label: "즐거운 (cheerful)" },
@@ -303,7 +196,7 @@
     ];
 
     // -----------------------------
-    // 4. 한 곡당 한 화면 trial
+    // 5. 곡 trial
     // -----------------------------
     const song_trial = {
       type: jsPsychSurveyHtmlForm,
@@ -313,19 +206,18 @@
 
         const progressHTML = `
           <div class="progress-text">
-            곡 ${idx} / ${TOTAL_TRIALS}
+            ${idx} / ${TOTAL_TRIALS}
           </div>
         `;
 
+        // 감정 슬라이더들
         let sliderHTML = "";
         sliderEmotions.forEach((em) => {
           sliderHTML += `
             <div class="slider-row">
               <div><strong>${em.label}</strong></div>
               <div class="slider-wrap">
-                <input type="range"
-                       name="${em.code}"
-                       min="0" max="100" step="1" value="0" />
+                <input type="range" name="${em.code}" min="0" max="100" step="1" value="0" />
                 <div class="mid-tick"></div>
               </div>
               <div class="slider-label-line">
@@ -371,9 +263,7 @@
             <p>아래의 <strong>Play</strong> 버튼을 누르시면 음악이 재생됩니다. 필요하면 여러 번 들으실 수 있습니다.</p>
             <button type="button"
                     onclick="document.getElementById('audio-${idx}').play()"
-                    class="jspsych-btn">
-              Play
-            </button>
+                    class="jspsych-btn">Play</button>
             <audio id="audio-${idx}" src="${file}" preload="auto"></audio>
           </div>
 
@@ -412,15 +302,15 @@
           </div>
         `;
       },
-      button_label: "다음 곡으로",
+      button_label: "다음",
       data: {
         file: jsPsych.timelineVariable("file"),
         base_emotion: jsPsych.timelineVariable("base_emotion"),
-        variant: jsPsych.timelineVariable("variant"),
+        tag: jsPsych.timelineVariable("tag"),   // ✅ D/T는 데이터로만 저장 (참가자 화면에는 안 보임)
         seq: jsPsych.timelineVariable("seq"),
       },
 
-      // "Play를 한 번이라도 눌렀는지" 검사
+      // Play 눌렀는지 체크
       on_load: function () {
         const idx = jsPsych.timelineVariable("seq");
         const audio = document.getElementById(`audio-${idx}`);
@@ -429,9 +319,7 @@
         let hasPlayed = false;
 
         if (audio) {
-          audio.addEventListener("play", () => {
-            hasPlayed = true;
-          });
+          audio.addEventListener("play", () => { hasPlayed = true; });
         }
 
         if (nextBtn) {
@@ -445,6 +333,7 @@
         }
       },
 
+      // 응답 저장
       on_finish: function (data) {
         const resp = data.response || {};
         sliderEmotions.forEach((em) => {
@@ -454,7 +343,7 @@
         data.valence = resp.valence !== undefined && resp.valence !== null ? Number(resp.valence) : null;
         data.arousal = resp.arousal !== undefined && resp.arousal !== null ? Number(resp.arousal) : null;
 
-        // 혹시 추후 분석 편하게 이름/subject_id도 각 trial에 남기고 싶으면:
+        // 각 trial에도 이름/ID 남기기(분석 편의)
         data.subject_id = subject_id;
         data.name = participant_name;
       },
@@ -462,12 +351,12 @@
 
     const song_procedure = {
       timeline: [song_trial],
-      timeline_variables: stimuli,
+      timeline_variables: shuffled_stimuli,
       randomize_order: false,
     };
 
     // -----------------------------
-    // 5. 종료 화면
+    // 6. 종료 화면
     // -----------------------------
     const outro = {
       type: jsPsychHtmlButtonResponse,
@@ -480,7 +369,7 @@
     };
 
     // -----------------------------
-    // 6. 전체 타임라인 실행
+    // 7. 전체 실행
     // -----------------------------
     jsPsych.run([
       name_screen,
