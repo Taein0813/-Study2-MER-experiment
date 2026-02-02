@@ -369,63 +369,72 @@
     };
 
 // -----------------------------
-// ✅ 6. 주관식(자유응답) 페이지 + 청취 방식(필수)
+// ✅ 6. 주관식(자유응답) 페이지 + 청취 방식(필수, 기타 시 입력 필수)
 // -----------------------------
 const free_response = {
   type: jsPsychSurveyHtmlForm,
   preamble: `
     <h1 class="main-title">자유 의견</h1>
-
     <div class="info-text" style="text-align:left;">
-      <div style="font-weight:700; margin-bottom:10px;">
-        어떤 방식으로 음악을 들으셨는지 체크해 주세요.
-      </div>
-
-      <div style="margin: 6px 0 14px 0;">
-        <label style="display:block; margin: 6px 0;">
-          <input type="radio" name="listening_method" value="블루투스" required>
-          블루투스
-        </label>
-        <label style="display:block; margin: 6px 0;">
-          <input type="radio" name="listening_method" value="스피커">
-          스피커
-        </label>
-        <label style="display:block; margin: 6px 0;">
-          <input type="radio" name="listening_method" value="헤드폰">
-          헤드폰
-        </label>
-        <label style="display:block; margin: 6px 0;">
-          <input type="radio" name="listening_method" value="기타" id="lm_other_radio">
-          기타:
-        </label>
-
-        <input
-          type="text"
-          name="listening_method_other"
-          id="lm_other_text"
-          placeholder="기타인 경우 여기에 입력해 주세요"
-          style="padding:6px 8px; width:420px; max-width:100%;"
-          disabled
-        />
-      </div>
-
-      <hr style="border:none; border-top:1px solid #e0e0e0; margin: 14px 0;" />
-
-      <strong>질문:</strong> 이번 실험이나, 일상에서 듣는 음악 전반에 관련해 음악 감정에 대한 본인의 의견을 자유롭게 써주세요.<br><br>
-      <span style="color:#444; font-size:12.5px;">
-        (예시)<br>
-        - 보통 음악의 ㅇㅇㅇ한 감정은 잘 느껴지는데, ㅇㅇㅇ한 감정은 잘 모르겠다.<br>
-        - 전반적으로 이 실험에서 감정 평가를 하는 데 자신감이 없었다.<br>
-        - 저번 첫 번째 실험과 달리~, 저번 실험과 비슷하게~ ㅇㅇㅇㅇ였다.<br>
-        - ㅇㅇ한 특징이 있는 음악은 더 ㅇㅇ하게 느껴지는 것 같다. 등
-      </span>
+      아래 문항에 응답해 주세요.
     </div>
   `,
   html: `
-    <div style="margin-top:14px;">
-      <textarea class="textarea" name="free_comment"
-        placeholder="여기에 자유롭게 작성해 주세요. (비워도 됩니다)"></textarea>
-    </div>
+    <fieldset>
+      <legend style="font-weight:700;">어떤 방식으로 음악을 들으셨는지 체크해 주세요. (필수)</legend>
+
+      <label style="display:block; margin: 10px 0;">
+        <input type="radio" name="listening_method" value="블루투스" required>
+        블루투스
+      </label>
+
+      <label style="display:block; margin: 10px 0;">
+        <input type="radio" name="listening_method" value="스피커">
+        스피커
+      </label>
+
+      <label style="display:block; margin: 10px 0;">
+        <input type="radio" name="listening_method" value="헤드폰">
+        헤드폰
+      </label>
+
+      <label style="display:block; margin: 10px 0;">
+        <input type="radio" name="listening_method" value="기타" id="lm_other_radio">
+        기타
+      </label>
+
+      <input
+        type="text"
+        name="listening_method_other"
+        id="lm_other_text"
+        placeholder="기타인 경우 여기에 입력해 주세요"
+        style="padding:6px 8px; width:420px; max-width:100%;"
+        disabled
+      />
+      <div style="font-size:12px; color:#555; margin-top:6px;">
+        * ‘기타’를 선택한 경우 위 칸에 내용을 반드시 입력해 주세요.
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend style="font-weight:700;">자유 의견 (선택)</legend>
+
+      <div class="info-text" style="text-align:left; margin-top:6px;">
+        <strong>질문:</strong> 이번 실험이나, 일상에서 듣는 음악 전반에 관련해 음악 감정에 대한 본인의 의견을 자유롭게 써주세요.<br><br>
+        <span style="color:#444; font-size:12.5px;">
+          (예시)<br>
+          - 보통 음악의 ㅇㅇㅇ한 감정은 잘 느껴지는데, ㅇㅇㅇ한 감정은 잘 모르겠다.<br>
+          - 전반적으로 이 실험에서 감정 평가를 하는 데 자신감이 없었다.<br>
+          - 저번 첫 번째 실험과 달리~, 저번 실험과 비슷하게~ ㅇㅇㅇㅇ였다.<br>
+          - ㅇㅇ한 특징이 있는 음악은 더 ㅇㅇ하게 느껴지는 것 같다. 등
+        </span>
+      </div>
+
+      <div style="margin-top:14px;">
+        <textarea class="textarea" name="free_comment"
+          placeholder="여기에 자유롭게 작성해 주세요. (비워도 됩니다)"></textarea>
+      </div>
+    </fieldset>
   `,
   button_label: "마지막으로 제출하기",
 
@@ -437,30 +446,44 @@ const free_response = {
     function updateOtherState() {
       const isOther = otherRadio && otherRadio.checked;
       if (!otherText) return;
+
       otherText.disabled = !isOther;
+
+      // 기타 선택 시 required 강제 부여
       if (isOther) {
+        otherText.setAttribute("required", "required");
         otherText.focus();
       } else {
+        otherText.removeAttribute("required");
         otherText.value = "";
       }
     }
 
-    // 라디오 선택 변화 감지
+    // 라디오 변화 감지
     const radios = document.querySelectorAll('input[name="listening_method"]');
     radios.forEach(r => r.addEventListener("change", updateOtherState));
 
-    // 페이지 로드 시 상태 초기화
+    // 초기 상태
     updateOtherState();
 
-    // "기타" 선택 시 텍스트 미입력이면 다음 못 넘어가게 막기
+    // 플러그인/브라우저 조합에 따라 required가 경고 없이 넘어가는 걸 방지하는 "추가 안전장치"
     if (nextBtn) {
       nextBtn.addEventListener("click", function (e) {
-        if (otherRadio && otherRadio.checked) {
+        const selected = document.querySelector('input[name="listening_method"]:checked');
+        if (!selected) {
+          e.preventDefault();
+          e.stopPropagation();
+          alert("청취 방식을 선택해 주세요.");
+          return;
+        }
+
+        if (selected.value === "기타") {
           const v = (otherText && otherText.value ? otherText.value.trim() : "");
           if (!v) {
             e.preventDefault();
             e.stopPropagation();
             alert("‘기타’를 선택하신 경우, 내용을 입력해 주세요.");
+            return;
           }
         }
       });
@@ -474,6 +497,7 @@ const free_response = {
     data.free_comment = (resp.free_comment || "").trim();
   },
 };
+
 
 
     // -----------------------------
