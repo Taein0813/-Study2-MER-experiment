@@ -81,6 +81,19 @@
     #jspsych-survey-html-form-next { margin-bottom: 40px; }
     [id^="jspsych-html-button-response-button"] { margin-bottom: 40px; }
 
+    .textarea {
+      width: 100%;
+      min-height: 220px;
+      padding: 10px 12px;
+      font-size: 13px;
+      line-height: 1.6;
+      border-radius: 8px;
+      border: 1px solid #cfcfcf;
+      box-sizing: border-box;
+      resize: vertical;
+      background: #fff;
+    }
+
     @media (max-width: 900px) {
       .trial-layout { flex-direction: column; }
       .left-pane, .right-pane { width: 100%; }
@@ -97,6 +110,9 @@
     // -----------------------------
     const SUBMIT_URL = "https://script.google.com/macros/s/AKfycbyPcfeDEyC46DIw7sJQE7G3z82Gi2mvyFT2PE0uNGcoKNmAHR5TLbeqICMInQX-HsM/exec";
 
+    // 제출 요청이 "보내졌음"을 표시하는 플래그 (no-cors라 성공/실패 확정 확인은 불가)
+    let submitRequested = false;
+
     // -----------------------------
     // 1. jsPsych 초기화
     // -----------------------------
@@ -109,7 +125,7 @@
         const submitted_at = now.toLocaleString("ko-KR", { timeZone: "Asia/Seoul" });
         const submitted_iso = now.toISOString();
 
-        // no-cors: 저장은 되지만 프론트에서 응답을 읽을 수 없음(안정적)
+        // no-cors: 저장 요청 전송은 되지만, 브라우저가 응답 내용을 읽을 수는 없음
         fetch(SUBMIT_URL, {
           method: "POST",
           mode: "no-cors",
@@ -122,6 +138,8 @@
             submitted_iso: submitted_iso,
           }),
         });
+
+        submitRequested = true;
       },
     });
 
@@ -162,19 +180,18 @@
     };
 
     // -----------------------------
-    // 3. 자극 목록: 총 8곡 (파일명: calm_D01.mp3 등)
-    //    ⚠️ 여기 파일명이 실제 stims 폴더와 정확히 일치해야 함
+    // 3. 자극 목록: 총 8곡 (파일명: calm_D01.wav 등)
     // -----------------------------
     const stimuli = [
-      { file: "stims/calm_D01.wav",  base_emotion: "calm",  tag: "D" },
-      { file: "stims/cheerful_D01.wav",  base_emotion: "calm",  tag: "D" },
-      { file: "stims/calm_T01.wav",  base_emotion: "calm",  tag: "T" },
-      { file: "stims/cheerful_T01.wav",  base_emotion: "calm",  tag: "T" },
+      { file: "stims/calm_D01.wav",      base_emotion: "calm",  tag: "D" },
+      { file: "stims/cheerful_D01.wav",  base_emotion: "cheerful",  tag: "D" },
+      { file: "stims/calm_T01.wav",      base_emotion: "calm",  tag: "T" },
+      { file: "stims/cheerful_T01.wav",  base_emotion: "cheerful",  tag: "T" },
 
-      { file: "stims/tense_D01.wav", base_emotion: "tense", tag: "D" },
-      { file: "stims/sad_D01.wav", base_emotion: "tense", tag: "D" },
-      { file: "stims/tense_T01.wav", base_emotion: "tense", tag: "T" },
-      { file: "stims/sad_T01.wav", base_emotion: "tense", tag: "T" },
+      { file: "stims/tense_D01.wav",     base_emotion: "tense", tag: "D" },
+      { file: "stims/sad_D01.wav",       base_emotion: "sad", tag: "D" },
+      { file: "stims/tense_T01.wav",     base_emotion: "tense", tag: "T" },
+      { file: "stims/sad_T01.wav",       base_emotion: "sad", tag: "T" },
     ];
 
     // 랜덤화 & seq 부여
@@ -183,7 +200,7 @@
     const TOTAL_TRIALS = shuffled_stimuli.length; // 8
 
     // -----------------------------
-    // 4. 감정 슬라이더 라벨 (원래 7개 유지)
+    // 4. 감정 슬라이더 라벨 (7개 유지)
     // -----------------------------
     const sliderEmotions = [
       { code: "cheerful", label: "즐거운 (cheerful)" },
@@ -210,7 +227,6 @@
           </div>
         `;
 
-        // 감정 슬라이더들
         let sliderHTML = "";
         sliderEmotions.forEach((em) => {
           sliderHTML += `
@@ -306,11 +322,10 @@
       data: {
         file: jsPsych.timelineVariable("file"),
         base_emotion: jsPsych.timelineVariable("base_emotion"),
-        tag: jsPsych.timelineVariable("tag"),   // ✅ D/T는 데이터로만 저장 (참가자 화면에는 안 보임)
+        tag: jsPsych.timelineVariable("tag"),
         seq: jsPsych.timelineVariable("seq"),
       },
 
-      // Play 눌렀는지 체크
       on_load: function () {
         const idx = jsPsych.timelineVariable("seq");
         const audio = document.getElementById(`audio-${idx}`);
@@ -333,7 +348,6 @@
         }
       },
 
-      // 응답 저장
       on_finish: function (data) {
         const resp = data.response || {};
         sliderEmotions.forEach((em) => {
@@ -343,7 +357,6 @@
         data.valence = resp.valence !== undefined && resp.valence !== null ? Number(resp.valence) : null;
         data.arousal = resp.arousal !== undefined && resp.arousal !== null ? Number(resp.arousal) : null;
 
-        // 각 trial에도 이름/ID 남기기(분석 편의)
         data.subject_id = subject_id;
         data.name = participant_name;
       },
@@ -356,24 +369,68 @@
     };
 
     // -----------------------------
-    // 6. 종료 화면
+    // ✅ 6. 주관식(자유응답) 페이지 추가
+    // -----------------------------
+    const free_response = {
+      type: jsPsychSurveyHtmlForm,
+      preamble: `
+        <h1 class="main-title">자유 의견</h1>
+        <div class="info-text" style="text-align:left;">
+          <strong>질문:</strong> 이번 실험이나, 일상에서 듣는 음악 전반에 관련해 음악 감정에 대한 본인의 의견을 자유롭게 써주세요.<br><br>
+          <span style="color:#444; font-size:12.5px;">
+            (예시)<br>
+            - 보통 음악의 ㅇㅇㅇ한 감정은 잘 느껴지는데, ㅇㅇㅇ한 감정은 잘 모르겠다.<br>
+            - 전반적으로 이 실험에서 감정 평가를 하는 데 자신감이 없었다.<br>
+            - 저번 첫 번째 실험과 달리~, 저번 실험과 비슷하게~ ㅇㅇㅇㅇ였다.<br>
+            - ㅇㅇ한 특징이 있는 음악은 더 ㅇㅇ하게 느껴지는 것 같다. 등
+          </span>
+        </div>
+      `,
+      html: `
+        <div style="margin-top:14px;">
+          <textarea class="textarea" name="free_comment"
+            placeholder="여기에 자유롭게 작성해 주세요. (비워도 됩니다)"></textarea>
+        </div>
+      `,
+      button_label: "마지막으로 제출하기",
+      on_finish: function (data) {
+        const resp = data.response || {};
+        // trial row에 저장 (컬럼: free_comment)
+        data.free_comment = (resp.free_comment || "").trim();
+      },
+    };
+
+    // -----------------------------
+    // ✅ 7. 종료(제출 완료) 화면: 버튼 누르면 저장 완료 문구 표시
     // -----------------------------
     const outro = {
       type: jsPsychHtmlButtonResponse,
       stimulus: `
-        <h2>실험이 완료되었습니다.</h2>
-        <p>참여해 주셔서 감사합니다.</p>
-        <p>종료 버튼을 누르면 응답이 저장됩니다.</p>
+        <h2>마지막 단계입니다.</h2>
+        <p>아래 <strong>종료</strong> 버튼을 누르면 응답 제출이 완료됩니다.</p>
+        <p style="font-size:12.5px; color:#444;">
+          ※ 버튼을 누른 뒤, 완료 문구가 뜰 때까지 창을 닫지 말아주세요.
+        </p>
       `,
       choices: ["종료 (꼭 눌러주세요)"],
+      on_finish: function () {
+        // 버튼 클릭 후, "완료" 화면으로 전환
+        jsPsych.endExperiment(`
+          <div style="max-width:720px; margin:120px auto; text-align:center; line-height:1.7;">
+            <h2 style="margin-bottom:14px;">정상적으로 응답이 저장되었습니다.</h2>
+            <p>실험에 참여해 주셔서 감사합니다.</p>
+          </div>
+        `);
+      },
     };
 
     // -----------------------------
-    // 7. 전체 실행
+    // 8. 전체 실행
     // -----------------------------
     jsPsych.run([
       name_screen,
       song_procedure,
+      free_response,  // ✅ 추가됨
       outro,
     ]);
   </script>
